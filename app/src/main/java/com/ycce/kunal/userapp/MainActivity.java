@@ -2,8 +2,11 @@ package com.ycce.kunal.userapp;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     private  String [] stops;
     private String mSource= null;
     private String mDestination=null;
-
     private ProgressDialog progressDialog;
 
     @Override
@@ -77,61 +79,75 @@ public class MainActivity extends AppCompatActivity {
         bSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                progressDialog.setMessage("Loading......");
-                progressDialog.show();
-
-                if (mSource==null||mDestination==null||mSource==mDestination){
-                    progressDialog.dismiss();
-                    if (mSource==null){
-
-                        aSource.setError("Source Empty");
-                    }
-                    if (mDestination==null){
-
-                        aDestinaion.setError("Destination Empty");
-                    }
-                    if (mDestination!= null&& mSource == mDestination){
-                        Toast.makeText(MainActivity.this, "Source and Destination cannot be same!!!!", Toast.LENGTH_SHORT).show();
-                    }
+                if (!isNetworkAvailable()){
+                    Toast.makeText(MainActivity.this, "Please check your internet connection", Toast.LENGTH_SHORT).show();
                 }else{
+                    progressDialog.setMessage("Loading......");
+                    progressDialog.show();
 
-                    if (!mSource.equals(null)&&!mDestination.equals(null)&&!mSource.equals(mDestination)){
+                    if (mSource==null||mDestination==null||mSource==mDestination){
+                        progressDialog.dismiss();
+                        if (mSource==null){
 
-                        BusStops busStops = new BusStops(mSource,mDestination);
-                        busStops.checkRoute();
-
-                        int startpos = busStops.getsourcePosition();
-                        int desPos = busStops.getdestinationPosition();
-                        String route = busStops.getRoute();
-                        String upDown = busStops.upDown();
-
-                        Intent searchIntent = new Intent(MainActivity.this,SearchActivity.class);
-
-                        if (startpos != 0 && desPos != 0){
-
-                            searchIntent.putExtra("startpos",startpos);
-                            searchIntent.putExtra("desPos",desPos);
-                            searchIntent.putExtra("route",route);
-                            searchIntent.putExtra("upDown",upDown);
-                            Toast.makeText(MainActivity.this, "startpos "+startpos+" desPos "+desPos+" route "+route+ " upDown "+upDown, Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
-                            finish();
-                            startActivity(searchIntent);
-
-                        }else{
-                            progressDialog.dismiss();
-                            Toast.makeText(MainActivity.this, "Error while requesting ", Toast.LENGTH_SHORT).show();
+                            aSource.setError("Source Empty");
                         }
-                       // Toast.makeText(MainActivity.this, "work in progress go safe ", Toast.LENGTH_SHORT).show();
+                        if (mDestination==null){
 
+                            aDestinaion.setError("Destination Empty");
+                        }
+                        if (mDestination!= null&& mSource == mDestination){
+                            Toast.makeText(MainActivity.this, "Source and Destination cannot be same!!!!", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+
+                        if (!mSource.equals(null)&&!mDestination.equals(null)&&!mSource.equals(mDestination)){
+
+                            BusStops busStops = new BusStops(mSource,mDestination);
+                            busStops.checkRoute();
+
+                            int startpos = busStops.getsourcePosition();
+                            int desPos = busStops.getdestinationPosition();
+                            String route = busStops.getRoute();
+                            String upDown = busStops.upDown();
+
+                            Intent searchIntent = new Intent(MainActivity.this,SearchActivity.class);
+
+                            if (startpos != 0 && desPos != 0){
+
+                                searchIntent.putExtra("startpos",startpos);
+                                searchIntent.putExtra("desPos",desPos);
+                                searchIntent.putExtra("route",route);
+                                searchIntent.putExtra("upDown",upDown);
+                                Toast.makeText(MainActivity.this, "startpos "+startpos+" desPos "+desPos+" route "+route+ " upDown "+upDown, Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                                finish();
+                                startActivity(searchIntent);
+
+                            }else{
+                                progressDialog.dismiss();
+                                Toast.makeText(MainActivity.this, "Error while requesting ", Toast.LENGTH_SHORT).show();
+                            }
+                            // Toast.makeText(MainActivity.this, "work in progress go safe ", Toast.LENGTH_SHORT).show();
+
+                        }
                     }
+
                 }
 
             }
         });
 
     }
+
+    private boolean isNetworkAvailable() {
+                ConnectivityManager cm =
+                        (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        return activeNetwork != null &&activeNetwork.isConnectedOrConnecting();
+    }
+
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)

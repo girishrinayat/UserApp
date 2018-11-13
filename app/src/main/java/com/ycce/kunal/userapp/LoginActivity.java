@@ -2,10 +2,16 @@ package com.ycce.kunal.userapp;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
@@ -23,6 +29,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -42,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     //Variables
     private String mUserName;
     private String mPassword;
-
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     public  static  final  String MyPref = "BusApp";
     public  static  final  String Password = "Password_Key";
     public  static  final  String username = "username_key";
@@ -55,22 +64,21 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         setTitle("User Login");
+
         applicationpreferences = getSharedPreferences(MyPref,MODE_PRIVATE);
-
         editor = applicationpreferences .edit();
-
-
         flag = applicationpreferences .getBoolean("flag", false);
 
+        if(checkAndRequestPermissions()){
+            if (flag) {
+                ///second time activity
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                finish();
+                startActivity(i);
 
-        if (flag) {
-            ///second time activity
-            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-            finish();
-            startActivity(i);
+            }
 
         }
-
 
         progressDialog = new ProgressDialog(this);
 
@@ -86,10 +94,15 @@ public class LoginActivity extends AppCompatActivity {
         bLogin = (Button) findViewById(R.id.bLogin);
 
 
+
         //event perform on login button
         bLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!isNetworkAvailable() ){
+                    Toast.makeText(LoginActivity.this, "check internet connection ", Toast.LENGTH_SHORT).show();
+
+                }else{
                 progressDialog.setMessage("Loading......");
                 progressDialog.show();
                 mUserName = eUserName.getText().toString();
@@ -135,6 +148,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
             }
+            }
     });
             cShowPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -152,22 +166,41 @@ public class LoginActivity extends AppCompatActivity {
             tRegister.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    progressDialog.setMessage("Loading......");
-                    progressDialog.show();
-                    finish();
-                    progressDialog.dismiss();
-                    startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+                    if (!isNetworkAvailable()){
+                        Toast.makeText(LoginActivity.this, "check internet connection ", Toast.LENGTH_SHORT).show();
+
+                    }else{
+                        if (checkAndRequestPermissions()){
+                            progressDialog.setMessage("Loading......");
+                            progressDialog.show();
+                            finish();
+                            progressDialog.dismiss();
+                            startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+                        }else{
+                            Toast.makeText(LoginActivity.this, "Please allow the permission", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
                 }
             });
 
            tforgetPassword.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    progressDialog.setMessage("Loading......");
-                    progressDialog.show();
-                    finish();
-                    startActivity(new Intent(LoginActivity.this,ForgetPasswordActivity.class));
-                    progressDialog.dismiss();
+                    if (!isNetworkAvailable() ){
+                        Toast.makeText(LoginActivity.this, "check internet connection ", Toast.LENGTH_SHORT).show();
+
+                    }else{
+                        if (checkAndRequestPermissions()){
+                            progressDialog.setMessage("Loading......");
+                            progressDialog.show();
+                            finish();
+                            startActivity(new Intent(LoginActivity.this,ForgetPasswordActivity.class));
+                            progressDialog.dismiss();
+                        }else{
+                            Toast.makeText(LoginActivity.this, "Please allow the permission", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
             });
 
@@ -179,19 +212,25 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user.isEmailVerified())
         {
-            // user is verified, so you can finish this activity or send user to activity which you want.
-            finish();
+            if (checkAndRequestPermissions()){
+
+                // user is verified, so you can finish this activity or send user to activity which you want.
+                finish();
 
 
-            //first time
+                //first time
 
-            editor.putString(username,mUserName);
-            editor.putString(Password,mPassword);
-            editor.putBoolean("flag", true);
-            editor.commit();
-            //Login MainActivity
-            progressDialog.dismiss();
-            startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                editor.putString(username,mUserName);
+                editor.putString(Password,mPassword);
+                editor.putBoolean("flag", true);
+                editor.commit();
+                //Login MainActivity
+                progressDialog.dismiss();
+
+                startActivity(new Intent(LoginActivity.this,MainActivity.class));
+            }else{
+                Toast.makeText(this, "Please allow the permission", Toast.LENGTH_SHORT).show();
+            }
         }
         else
         {
@@ -204,6 +243,48 @@ public class LoginActivity extends AppCompatActivity {
 
         }
     }
+    //runtime network state
+    private boolean isNetworkAvailable() {
+        ConnectivityManager cm =
+                (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        return activeNetwork != null &&activeNetwork.isConnectedOrConnecting();
+    }
+    //runtime permission for
+    private  boolean checkAndRequestPermissions() {
+//        int camera = ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA);
+//        int storage = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//        int internet =  ContextCompat.checkSelfPermission(this,android.Manifest.permission.INTERNET);
+        int loc = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION);
+        int loc2 = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+
+       /* if (camera != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.CAMERA);
+        }*/
+     /*   if (storage != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }*/
+       /* if (internet != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.INTERNET);
+        }*/
+        if (loc2 != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (loc != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+        if (!listPermissionsNeeded.isEmpty())
+        {
+            ActivityCompat.requestPermissions(this,listPermissionsNeeded.toArray
+                    (new String[listPermissionsNeeded.size()]),REQUEST_ID_MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
