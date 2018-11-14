@@ -5,41 +5,60 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageSwitcher;
 import android.widget.Toast;
+
+import java.net.Inet4Address;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
     private AutoCompleteTextView aSource;
     private AutoCompleteTextView aDestinaion;
+    private EditText adult;
+    private EditText child;
+    private EditText date;
     private Button bSearch;
 
+    private SharedPreferences applicationpreferences;
+    private SharedPreferences.Editor editor;
+    public  static  final  String MyPref = "BusApp";
     private ArrayAdapter<String> source;
     private ArrayAdapter<String> destination;
     private  String [] stops;
     private String mSource= null;
     private String mDestination=null;
+    private String mAdult = null;
+    private String mchild = null;
     private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("Search");
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
 
-        progressDialog = new ProgressDialog(this);
+        setTitle("Main Menu");
+        setSupportActionBar(myToolbar);
 
-
+        applicationpreferences = getSharedPreferences(MyPref,MODE_PRIVATE);
+        editor = applicationpreferences .edit();
         stops= new String[]{"Pardi", "subhan nagar", "old pardi naka", "railway crossing", "sangharsh nagar","swaminarayan mandir", "wathoda" , "karbi",
                 "dighori flyover","mhalgi nagar", "manevada square","omkar nagar","rameshawari", "Tukram hall", "narendra nagar",
                 "chatrapati square","sawrakar square", "pratap nagar", "padole hospital square","sambhaji square", "NIT garden",
@@ -48,9 +67,19 @@ public class MainActivity extends AppCompatActivity {
                 "Ujjwal Nagar", "Sonegaon", "Airport(Pride Hotel)", "Bara Kholi", "Shivangaon","Chinchbhavan", "Khapri Naka", "Khapri", "Khapri Fata", "Parsodi",
                 "Gauvsi Manapur", "Jamtha", "Ashokvan", "Dongargaon", "Gothali", "Mohgaon","Satgaon Fata", "Butibori"};
 
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date mDate = new Date();
+
         aSource = (AutoCompleteTextView) findViewById(R.id.aSource);
         aDestinaion = (AutoCompleteTextView) findViewById(R.id.aDestination);
         bSearch = (Button) findViewById(R.id.bSearch);
+        adult = (EditText)findViewById(R.id.numberofadult);
+        child = (EditText)findViewById(R.id.numberofchild);
+        date = (EditText)findViewById(R.id.currentDate);
+
+        date.setText(formatter.format(mDate));
+
+        progressDialog = new ProgressDialog(this);
 
         source = new ArrayAdapter<String>
                 (this,android.R.layout.simple_list_item_1,stops);
@@ -79,14 +108,32 @@ public class MainActivity extends AppCompatActivity {
         bSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int nchild = 0;
+                int nadult = 0;
+                mAdult = adult.getText().toString();
+                mchild = child.getText().toString();
+
                 if (!isNetworkAvailable()){
                     Toast.makeText(MainActivity.this, "Please check your internet connection", Toast.LENGTH_SHORT).show();
                 }else{
                     progressDialog.setMessage("Loading......");
                     progressDialog.show();
 
+                    try{
+                        nadult = Integer.parseInt(mAdult);
+                        nchild = Integer.parseInt(mchild);
+
+                    }catch (NumberFormatException e){
+                            child.setError("please enter the number ");
+                            adult.setError("please enter the number ");
+                    }
                     if (mSource==null||mDestination==null||mSource==mDestination){
                         progressDialog.dismiss();
+
+                        if (nadult==0&&nchild==0){
+                            child.setError("child cannot be 0");
+                            adult.setError("Adult cannot be 0");
+                        }
                         if (mSource==null){
 
                             aSource.setError("Source Empty");
@@ -118,7 +165,10 @@ public class MainActivity extends AppCompatActivity {
                                 searchIntent.putExtra("desPos",desPos);
                                 searchIntent.putExtra("route",route);
                                 searchIntent.putExtra("upDown",upDown);
-                                Toast.makeText(MainActivity.this, "startpos "+startpos+" desPos "+desPos+" route "+route+ " upDown "+upDown, Toast.LENGTH_SHORT).show();
+                                searchIntent.putExtra("Adult",nadult);
+                                searchIntent.putExtra("Child",nchild);
+                                searchIntent.putExtra("date",date.getText().toString());
+                                Toast.makeText(MainActivity.this, "startpos "+startpos+" child "+nchild+" Adult "+ nadult+" date " +date+" desPos "+desPos+" route "+route+ " upDown "+upDown, Toast.LENGTH_SHORT).show();
                                 progressDialog.dismiss();
                                 finish();
                                 startActivity(searchIntent);
@@ -137,6 +187,49 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.history) {
+            finish();
+           startActivity(new Intent(this,HistoryActivity.class));
+            return true;
+        } else if (id == R.id.setting) {
+            Toast.makeText(this, "We will develop setting soon...", Toast.LENGTH_SHORT).show();
+
+            return true;
+        } else if (id == R.id.contactUs) {
+            Toast.makeText(this, "We will develop contact Us  soon...", Toast.LENGTH_SHORT).show();
+            return true;
+
+        }else if (id == R.id.logout){
+
+            editor.clear();
+            editor.commit();
+            finish();
+            startActivity(new Intent(this,LoginActivity.class));
+            return true;
+
+        }else if (id == R.id.exit){
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private boolean isNetworkAvailable() {

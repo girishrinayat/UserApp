@@ -7,6 +7,7 @@
     android:orientation="vertical"
     android:background="#ffff"
     tools:context=".RegisterActivity">
+
     <RelativeLayout
         android:gravity="center"
         android:layout_width="match_parent"
@@ -22,18 +23,17 @@
 
     <LinearLayout
         android:background="#10eae7e7"
-        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
         android:orientation="vertical">
 
         <EditText
-            android:drawableLeft="@drawable/user_24dp"
             android:layout_marginTop="5dp"
+            android:drawableLeft="@drawable/user_24dp"
             android:inputType="text"
             android:id="@+id/eName"
             android:layout_width="match_parent"

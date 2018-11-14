@@ -118,16 +118,20 @@ public class RegisterActivity extends AppCompatActivity {
     private void sendVerificationEmail()
     {
         FirebaseUser user = mAuth.getCurrentUser();
+       final String userId =  user.getUid();
         user.sendEmailVerification()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
+
+
                             // email sent
 
-                            myRef = database.getReference("User Details").child("User").child(mName);
+                            myRef = database.getReference("User Details").child("User").child(userId);
 
                             // store in Real time database of firebase
+                            myRef.child("Name").setValue(mName);
                             myRef.child("Email").setValue(mEmail);
                             myRef.child("Mobile").setValue(mContact);
 
@@ -213,17 +217,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setTitle("Really Exit?")
-                .setMessage("Are you sure you want to exit?")
-                .setNegativeButton(android.R.string.no, null)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        setResult(RESULT_OK, new Intent().putExtra("EXIT", true));
-                        finish();
-                    }
-
-                }).create().show();
+        finish();
+        startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
     }
 }

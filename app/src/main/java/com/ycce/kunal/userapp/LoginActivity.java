@@ -55,10 +55,11 @@ public class LoginActivity extends AppCompatActivity {
     public  static  final  String MyPref = "BusApp";
     public  static  final  String Password = "Password_Key";
     public  static  final  String username = "username_key";
+    public  static  final  String userID = "userId";
     SharedPreferences applicationpreferences;
     SharedPreferences.Editor editor;
     Boolean flag;
-
+    String userId =  null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +118,8 @@ public class LoginActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
                                         //Log.d(TAG, "signInWithEmail:success");
-
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        userId=user.getUid();
                                         checkIfEmailVerified();
 
                                      //   Toast.makeText(LoginActivity.this, "Login Sucess", Toast.LENGTH_SHORT).show();
@@ -222,6 +224,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 editor.putString(username,mUserName);
                 editor.putString(Password,mPassword);
+                editor.putString(userID,userId);
                 editor.putBoolean("flag", true);
                 editor.commit();
                 //Login MainActivity
