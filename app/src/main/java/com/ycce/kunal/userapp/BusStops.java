@@ -2,7 +2,7 @@ package com.ycce.kunal.userapp;
 
 public class BusStops {
 
-    private String[] pardiycce={"","Pardi", "subhan nagar", "old pardi naka", "railway crossing", "sangharsh nagar","swaminarayan mandir", "wathoda" , "karbi",
+    private String[] pardiycce={"","Pardi", "subhan nagar", "old pardi naka", "sangharsh nagar","swaminarayan mandir", "wathoda" , "karbi",
             "dighori flyover","mhalgi nagar", "manevada square","omkar nagar","rameshawari", "Tukram hall", "narendra nagar",
             "chatrapati square","sawrakar square", "pratap nagar", "padole hospital square","sambhaji square", "NIT garden",
             "Trimurti nagar","mangalmurti square","balaji nagar", "mahindra company", "IC square", "electric zone", "Hingna T-point", "crpf", "Ycce","Wanadongri"};
@@ -35,7 +35,7 @@ public class BusStops {
         if(source != null && destination != null){
 
 
-              if (startpos==0|| desPos==0){
+
 //                  startpos = 0;desPos = 0;
                   for(int i=0;i<pardiycce.length;i++){
 
@@ -45,60 +45,60 @@ public class BusStops {
                       if(destination.equals(pardiycce[i])) {
                           this.desPos = i;
                       }
-                      if(startpos!=0&& desPos!=0){
+                      if(startpos>0&& desPos>0){
                           route = "pardiycce";
                       }
 
 
                   }
-              }
-                if (startpos==0|| desPos==0){
-//                  startpos = 0;desPos = 0;
-                for(int i=0;i<buldiButebori.length;i++){
-                    if (source.equals(buldiButebori[i])){
-                        this.startpos = i;
-                    }
-                    if(destination.equals(buldiButebori[i])) {
-                        this.desPos = i;
-                    }
-                    if(startpos!=0&& desPos!=0){
-                        route = "buldiButebori";
-                    }
-                }
-              }
-               if (startpos==0|| desPos==0) {
-//                  startpos = 0;desPos = 0;
-                  for (int i = 0; i < buldiKoradi.length; i++) {
+                  if (startpos==0|| desPos==0){
+                      startpos = 0;desPos = 0;
+                      for(int i=0;i<buldiButebori.length;i++){
+                          if (source.equals(buldiButebori[i])){
+                              this.startpos = i;
+                          }
+                          if(destination.equals(buldiButebori[i])) {
+                              this.desPos = i;
+                          }
+                          if(startpos>0&& desPos>0){
+                              route = "buldiButebori";
+                          }
+                      }
+                      if (startpos==0|| desPos==0){
+                          startpos = 0;desPos = 0;
+                          for (int i = 0; i < buldiKoradi.length; i++) {
 
-                      if (source.equals(buldiKoradi[i])) {
-                          this.startpos = i;
-                      }
-                      if (destination.equals(buldiKoradi[i])) {
-                          this.desPos = i;
-                      }
-                      if(startpos!=0&& desPos!=0){
-                          route = "buldiKoradi";
+                              if (source.equals(buldiKoradi[i])) {
+                                  this.startpos = i;
+                              }
+                              if (destination.equals(buldiKoradi[i])) {
+                                  this.desPos = i;
+                              }
+                              if(startpos>0&& desPos>0){
+                                  route = "buldiKoradi";
+                              }
+                          }
+                          if (startpos==0|| desPos==0){
+                              startpos = 0;desPos = 0;
+                              for (int i = 0; i < buldiCRPF.length; i++) {
+
+                                  if (source.equals(buldiCRPF[i])) {
+                                      this.startpos = i;
+                                  }
+                                  if (destination.equals(buldiCRPF[i])) {
+                                      this.desPos = i;
+                                  }
+                                  if(startpos>0&& desPos>0){
+                                      route = "buldiCRPF";
+                                  }
+                              }
+                              if (startpos==0|| desPos==0){
+                                  startpos = 0;desPos = 0;
+                              }
+                          }
+
                       }
                   }
-              }
-               if (startpos==0|| desPos==0) {
-//                  startpos = 0;desPos = 0;
-                  for (int i = 0; i < buldiCRPF.length; i++) {
-
-                      if (source.equals(buldiCRPF[i])) {
-                          this.startpos = i;
-                      }
-                      if (destination.equals(buldiCRPF[i])) {
-                          this.desPos = i;
-                      }
-                      if(startpos!=0&& desPos!=0){
-                          route = "buldiCRPF";
-                      }
-                  }
-              }
-              else{
-
-              }
 
         }
     }

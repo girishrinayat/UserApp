@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private String mAdult = null;
     private String mchild = null;
     private ProgressDialog progressDialog;
+    private  Date mDate;
+    private  SimpleDateFormat formatter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         applicationpreferences = getSharedPreferences(MyPref,MODE_PRIVATE);
         editor = applicationpreferences .edit();
-        stops= new String[]{"Pardi", "subhan nagar", "old pardi naka", "railway crossing", "sangharsh nagar","swaminarayan mandir", "wathoda" , "karbi",
+        stops= new String[]{"Pardi", "subhan nagar", "old pardi naka",  "sangharsh nagar","swaminarayan mandir", "wathoda" , "karbi",
                 "dighori flyover","mhalgi nagar", "manevada square","omkar nagar","rameshawari", "Tukram hall", "narendra nagar",
                 "chatrapati square","sawrakar square", "pratap nagar", "padole hospital square","sambhaji square", "NIT garden",
                 "Trimurti nagar","mangalmurti square","balaji nagar", "mahindra company", "IC square", "electric zone", "Hingna T-point", "crpf", "Ycce","Wanadongri"
@@ -67,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
                 "Ujjwal Nagar", "Sonegaon", "Airport(Pride Hotel)", "Bara Kholi", "Shivangaon","Chinchbhavan", "Khapri Naka", "Khapri", "Khapri Fata", "Parsodi",
                 "Gauvsi Manapur", "Jamtha", "Ashokvan", "Dongargaon", "Gothali", "Mohgaon","Satgaon Fata", "Butibori"};
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Date mDate = new Date();
+        formatter = new SimpleDateFormat("dd/MM/yyyy");
+        mDate = new Date();
 
         aSource = (AutoCompleteTextView) findViewById(R.id.aSource);
         aDestinaion = (AutoCompleteTextView) findViewById(R.id.aDestination);
@@ -157,24 +159,31 @@ public class MainActivity extends AppCompatActivity {
                             String route = busStops.getRoute();
                             String upDown = busStops.upDown();
 
-                            Intent searchIntent = new Intent(MainActivity.this,SearchActivity.class);
+                            Intent ticketIntent = new Intent(MainActivity.this,TicketActivity.class);
 
-                            if (startpos != 0 && desPos != 0){
+                            if (startpos != 0 && desPos != 0 &&(nadult!=0||nchild!=0)){
 
-                                searchIntent.putExtra("startpos",startpos);
-                                searchIntent.putExtra("desPos",desPos);
-                                searchIntent.putExtra("route",route);
-                                searchIntent.putExtra("upDown",upDown);
-                                searchIntent.putExtra("Adult",nadult);
-                                searchIntent.putExtra("Child",nchild);
-                                searchIntent.putExtra("date",date.getText().toString());
+                                int distance = desPos-startpos;
+                                String ticketdate =formatter.format(mDate);
+                                ticketIntent.putExtra("distance",distance);
+                                ticketIntent.putExtra("route",route);
+                                ticketIntent.putExtra("upDown",upDown);
+                                ticketIntent.putExtra("Adult",nadult);
+                                ticketIntent.putExtra("Child",nchild);
+                                ticketIntent.putExtra("date",ticketdate);
+                                ticketIntent.putExtra("source",mSource);
+                                ticketIntent.putExtra("destination",mDestination);
                                 Toast.makeText(MainActivity.this, "startpos "+startpos+" child "+nchild+" Adult "+ nadult+" date " +date+" desPos "+desPos+" route "+route+ " upDown "+upDown, Toast.LENGTH_SHORT).show();
                                 progressDialog.dismiss();
                                 finish();
-                                startActivity(searchIntent);
+                                startActivity(ticketIntent);
 
                             }else{
                                 progressDialog.dismiss();
+                                if (nadult==0&&nchild==0){
+                                    child.setError("child cannot be 0");
+                                    adult.setError("Adult cannot be 0");
+                                }
                                 Toast.makeText(MainActivity.this, "Error while requesting ", Toast.LENGTH_SHORT).show();
                             }
                             // Toast.makeText(MainActivity.this, "work in progress go safe ", Toast.LENGTH_SHORT).show();

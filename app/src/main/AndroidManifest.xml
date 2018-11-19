@@ -24,7 +24,8 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".SearchActivity" />
         <activity android:name=".ForgetPasswordActivity" />
-        <activity android:name=".HistoryActivity"></activity>
+        <activity android:name=".HistoryActivity" />
+        <activity android:name=".TicketActivity"></activity>
     </application>
 
 </manifest>
