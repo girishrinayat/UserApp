@@ -169,9 +169,190 @@
 
             </LinearLayout>
         </LinearLayout>
+        <LinearLayout
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/paymentactivity">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="#ffff"
+                android:padding="10dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Add Money To Wallet"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:layout_weight="0.7"
+                    />
+                <TextView
+                    android:id="@+id/wallet"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="0.00 /-Rs"
+                    android:textSize="20dp"
+                    android:layout_weight="0.3"/>
+            </LinearLayout>
+            <TextView
+                android:layout_marginTop="5dp"
+                android:textSize="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="CHOOSE A PAYMENT METHOD"
+                android:textAlignment="center"/>
 
 
+            <LinearLayout
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/cardview">
+                    <TextView
+                        android:layout_marginTop="2dp"
+                        android:padding="10dp"
+                        android:id="@+id/bhimUPI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="BHIM UPI"
+                        android:textStyle="bold"
+                        android:textSize="16dp"/>
+
+                    <TextView
+                        android:id="@+id/bhimClick"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Not build yet"
+                        android:visibility="gone"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:background="@drawable/cardview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_marginTop="2dp"
+                        android:padding="10dp"
+                        android:id="@+id/creditcard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Credit or Debit Card"
+                        android:textStyle="bold"
+                        android:textSize="16dp"/>
+
+                    <LinearLayout
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/cardLayout"
+                        android:visibility="gone"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#45f7e2"
+                        android:layout_marginBottom="20dp">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Card Number"/>
+                        <EditText
+                            android:id="@+id/cardNumber"
+                            android:inputType="number"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLength="16"
+                            android:hint="XXXX-XXXX-XXXX-XXXX"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="Expiry"
+                                android:layout_weight="0.5"/>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.5"
+                                android:text="CVV"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <EditText
+                                android:id="@+id/expiry"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:hint="MM/YY"
+                                android:maxLength="4"
+                                android:inputType="number"
+                                android:layout_weight="0.5"/>
+                            <EditText
+                                android:id="@+id/cvv"
+                                android:inputType="number"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.5"
+                                android:hint="XXX"
+                                android:maxLength="3"/>
+                        </LinearLayout>
+                        <Button
+                            android:layout_margin="10dp"
+                            android:id="@+id/paybtn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/cardview"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_marginTop="2dp"
+                        android:padding="10dp"
+                        android:id="@+id/netBanking"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Net Banking"
+                        android:textStyle="bold"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/nClick"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Not build yet"
+                        android:visibility="gone"
+                        />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_marginTop="10dp"
+            android:id="@+id/qrimg"
+            android:layout_gravity="center"
+            android:layout_width="150dp"
+            android:layout_height="120dp" />
 
     </LinearLayout>
 </ScrollView>

@@ -164,6 +164,9 @@ public class MainActivity extends AppCompatActivity {
                             if (startpos != 0 && desPos != 0 &&(nadult!=0||nchild!=0)){
 
                                 int distance = desPos-startpos;
+                                if (distance<0){
+                                    distance = -1*distance;
+                                }
                                 String ticketdate =formatter.format(mDate);
                                 ticketIntent.putExtra("distance",distance);
                                 ticketIntent.putExtra("route",route);
