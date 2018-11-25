@@ -1,51 +1,49 @@
 package com.ycce.kunal.userapp;
 
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.UUID;
 import java.io.UnsupportedEncodingException;
 
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 public class TicketActivity extends AppCompatActivity {
 
@@ -93,27 +91,26 @@ public class TicketActivity extends AppCompatActivity {
     private TextView bhimclick;
     private TextView netclick;
     private Button pay;
+    private Button cancelbtn;
+    private Button locateBus;
     private ImageView qrimg;
 
     private String cardNum;
     private String expDate;
     private String cvvNum;
     private ProgressDialog progressDialog;
-
-    public final static int QRcodeWidth = 500 ;
     private Bitmap bitmap;
-
+    private   Toolbar toolbar = null;
     private SharedPreferences applicationpreferences;
     private SharedPreferences.Editor editor;
 
     public  static  final  String MyPref = "BusApp";
 
+    Menu menu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toolbar myToolbars = (Toolbar) findViewById(R.id.my_toolbars);
-        setSupportActionBar(myToolbars);
-        setContentView(R.layout.activity_ticket);
+         setContentView(R.layout.activity_ticket);
         Bundle extras = getIntent().getExtras();
 
         if (extras!=null) {
@@ -140,7 +137,7 @@ public class TicketActivity extends AppCompatActivity {
         cancel = (Button)findViewById(R.id.cancel);
         ticketLayout= (LinearLayout) findViewById(R.id.ticketLayout);
         paymentLayout= (LinearLayout) findViewById(R.id.paymentactivity);
-
+        locateBus= (Button)findViewById(R.id.locateBus);
         //payment activity
         bhimUPI = (TextView)findViewById(R.id.bhimUPI);
         card = (TextView)findViewById(R.id.creditcard);
@@ -152,6 +149,7 @@ public class TicketActivity extends AppCompatActivity {
         cvv = (EditText)findViewById(R.id.cvv);
         cardLayout = (LinearLayout)findViewById(R.id.cardLayout);
         pay = (Button)findViewById(R.id.paybtn);
+        cancelbtn = (Button)findViewById(R.id.cancelbtn);
         wallet = (TextView)findViewById(R.id.wallet);
         qrimg = (ImageView)findViewById(R.id.qrimg);
 
@@ -163,6 +161,13 @@ public class TicketActivity extends AppCompatActivity {
         Log.d("asa", "userId is: " + userId );
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("User Details").child("User").child(userId).child("History");
+
+        locateBus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(TicketActivity.this,SearchActivity.class));
+            }
+        });
         //ticket logic
         fare();
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -175,9 +180,12 @@ public class TicketActivity extends AppCompatActivity {
         payButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ticketLayout.setVisibility(View.GONE);
-                paymentLayout.setVisibility(View.VISIBLE);
-                paymentActivityGateway();
+               if (!isNetworkAvailable()){
+                   Toast.makeText(TicketActivity.this, "Check your network connection", Toast.LENGTH_SHORT).show();
+               }else {
+                   ticketLayout.setVisibility(View.GONE);
+                   paymentActivityGateway();
+               }
 
             }
         });
@@ -213,21 +221,39 @@ public class TicketActivity extends AppCompatActivity {
         pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                  cardNum = cardNumber.getText().toString();
-                  expDate = expiry.getText().toString();
-                  cvvNum = cvv.getText().toString();
+                  if (!isNetworkAvailable()){
+                      Toast.makeText(TicketActivity.this, "Check your network connection", Toast.LENGTH_SHORT).show();
+                  }else{
+                      cardNum = cardNumber.getText().toString();
+                      expDate = expiry.getText().toString();
+                      cvvNum = cvv.getText().toString();
 
-                  if ((cardNum+expDate+cvvNum).equals("12345678901234560721123")){
-                      progressDialog.setMessage("Processing....");
-                      progressDialog.show();
-                      qrCode();
-                  }else {
-                      Toast.makeText(getApplicationContext(), "Invalid Card input", Toast.LENGTH_SHORT).show();
+                      if ((cardNum+expDate+cvvNum).equals("12345678901234560721123")){
+                                 progressDialog.setMessage("Processing transaction...");
+                                 progressDialog.show();
+                                 if (progressDialog.isShowing()){
+                                     qrCode();
+                                 }
 
+                      }else {
+                          Toast.makeText(getApplicationContext(), "Invalid Card input", Toast.LENGTH_SHORT).show();
+
+                      }
                   }
 
 
 
+            }
+        });
+
+        cancelbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                paymentLayout.setVisibility(View.GONE);
+                ticketLayout.setVisibility(View.VISIBLE);
+
+                payButton.setVisibility(View.VISIBLE);
+                cancel.setVisibility(View.VISIBLE);
             }
         });
 
@@ -244,67 +270,59 @@ public class TicketActivity extends AppCompatActivity {
     }
 
     public void qrCode(){
-        String encode ;
+        pay.setVisibility(View.GONE);
+        cancelbtn.setVisibility(View.GONE);
+        final String encode ;
         byte[] str= new byte[0];
-            try {
-                progressDialog.setMessage("Processing....");
-                progressDialog.show();
-//            encode = java.util.Base64.getEncoder().encodeToString(str);
 
             str = ("Fare : "+iFare+"\nSource : "+mSource+"\nDestination : "+mDestination+"\nRoute : "+setroute+
                     "\nNo. of Passengers : "+passengers.getText().toString()+"\nTicket Issue Date : "+issuedate.getText().toString()
                     +"\n Valid Till : "+validtill.getText().toString()).getBytes();
 
-                encode=Base64.encodeToString(str,1);
-                bitmap = TextToImageEncode(encode);
-                qrimg.setImageBitmap(bitmap);
-                paymentLayout.setVisibility(View.GONE);
-                ticketLayout.setVisibility(View.VISIBLE);
-               // Toast.makeText(getApplicationContext(), "Transaction Successfull "+"new account balance"+ iFare, Toast.LENGTH_LONG).show();
-                Log.d("Tag","hello"+bitmap);
-                String dateId = issuedate.getText().toString();
-                dateId = dateId.replaceAll("/",":");
-                myRef.child( dateId).setValue(encode);
-                progressDialog.dismiss();
+        encode=Base64.encodeToString(str,1);
+        String dateId = issuedate.getText().toString();
+        dateId = dateId.replaceAll("/",":");
 
-            } catch (WriterException e) {
-            e.printStackTrace();
+        try {
+                CreateQr createQr =new CreateQr(TicketActivity.this);
+                bitmap = createQr.TextToImageEncode(encode);
+                try{
+                    ContextWrapper wrapper = new ContextWrapper(getApplicationContext());
+                    File file = Environment.getExternalStorageDirectory();
+                    file = new File(file+"/TicketQRCode/Images/", dateId+".jpg");
+                    OutputStream stream = null;
+                    stream = new FileOutputStream(file);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream);
+                    stream.flush();
+                    stream.close();
+                    Uri savedImageURI = Uri.parse(file.getAbsolutePath());
+                    qrimg.setImageBitmap(bitmap);
+                    Log.d("Tag","hello"+bitmap);
+                    paymentLayout.setVisibility(View.GONE);
+                    ticketLayout.setVisibility(View.VISIBLE);
+                    locateBus.setVisibility(View.VISIBLE);
+                    myRef.child( dateId).setValue(encode);
+                    progressDialog.dismiss();
+//                    Log.d("Tag","savedImageURI "+savedImageURI + Uri.parse(file.getPath())+Uri.parse(file.getCanonicalPath())   );
+                }catch (Exception e){
+                    paymentLayout.setVisibility(View.VISIBLE);
+                    locateBus.setVisibility(View.GONE);
+                    ticketLayout.setVisibility(View.GONE);
+                    pay.setVisibility(View.VISIBLE);
+                    cancelbtn.setVisibility(View.VISIBLE);
+                    Log.e("Exception ",e.toString());
+                }
 
-            } catch (Exception e) {
+
+//                qrimg.setImageBitmap(bitmap);
+
+
+            }  catch (Exception e) {
                 Toast.makeText(this, ""+e, Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }
 
-        Bitmap TextToImageEncode(String Value) throws WriterException {
-            BitMatrix bitMatrix;
-            try {
-                bitMatrix = new MultiFormatWriter().encode(Value, BarcodeFormat.DATA_MATRIX.QR_CODE,
-                    QRcodeWidth, QRcodeWidth, null);
-
-            } catch (IllegalArgumentException Illegalargumentexception) {
-
-                return null;
-            }
-            int bitMatrixWidth = bitMatrix.getWidth();
-            int bitMatrixHeight = bitMatrix.getHeight();
-
-            int[] pixels = new int[bitMatrixWidth * bitMatrixHeight];
-
-            for (int y = 0; y < bitMatrixHeight; y++) {
-                int offset = y * bitMatrixWidth;
-
-                for (int x = 0; x < bitMatrixWidth; x++) {
-
-                 pixels[offset + x] = bitMatrix.get(x, y) ?
-                        getResources().getColor(R.color.text_color_icon):getResources().getColor(R.color.bg_user_message);
-                }
-            }
-            Bitmap bitmap = Bitmap.createBitmap(bitMatrixWidth, bitMatrixHeight, Bitmap.Config.ARGB_4444);
-
-            bitmap.setPixels(pixels, 0, 500, 0, 0, bitMatrixWidth, bitMatrixHeight);
-        return bitmap;
-    }
 
     void fare(){
         //Fair calculate
@@ -328,32 +346,6 @@ public class TicketActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.ticket_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.searchBus) {
-//            startActivity(new Intent(this,HistoryActivity.class));
-            return true;
-        }  else if (id == R.id.contactUs) {
-            Toast.makeText(this, "We will develop contact Us  soon...", Toast.LENGTH_SHORT).show();
-            return true;
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private boolean isNetworkAvailable() {
         ConnectivityManager cm =
                 (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -363,14 +355,12 @@ public class TicketActivity extends AppCompatActivity {
         return activeNetwork != null &&activeNetwork.isConnectedOrConnecting();
     }
 
-
     @Override
     public void onBackPressed() {
 
         new AlertDialog.Builder(this)
                 .setTitle("Alert")
-                .setMessage("Do you really want to get to Booking Activity? \nyour QR Code will get destroy!!! if you have booked any" +
-                        "\n Please kindly take Screenshot ")
+                .setMessage("Do you really want to get to Booking Activity? ")
                 .setNegativeButton(android.R.string.no, null)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 

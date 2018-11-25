@@ -12,16 +12,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/my_toolbars"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#490386"
-            app:titleTextColor="#ffffff"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-
         <LinearLayout
             android:id="@+id/ticketLayout"
             android:background="@drawable/edittext"
@@ -142,6 +132,16 @@
             </TableRow>
             </TableLayout>
 
+                <Button
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone"
+                    android:background="@drawable/button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Bus on this Route"
+                    android:id="@+id/locateBus"
+                    android:layout_gravity="center" />
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -168,6 +168,7 @@
                     android:layout_gravity="center" />
 
             </LinearLayout>
+
         </LinearLayout>
         <LinearLayout
             android:visibility="gone"
@@ -310,12 +311,28 @@
                                 android:hint="XXX"
                                 android:maxLength="3"/>
                         </LinearLayout>
-                        <Button
-                            android:layout_margin="10dp"
-                            android:id="@+id/paybtn"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            />
+                      <LinearLayout
+                          android:layout_margin="10dp"
+                          android:orientation="horizontal"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1">
+                          <Button
+                              android:layout_margin="2dp"
+                              android:id="@+id/paybtn"
+                              android:layout_weight="0.5"
+                              android:layout_width="0dp"
+                              android:layout_height="wrap_content"
+                              />
+                          <Button
+                              android:layout_margin="2dp"
+                              android:id="@+id/cancelbtn"
+                              android:layout_weight="0.5"
+                              android:layout_width="0dp"
+                              android:text="Cancel"
+                              android:layout_height="wrap_content"
+                              />
+                      </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
 

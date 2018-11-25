@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 "dighori flyover","mhalgi nagar", "manevada square","omkar nagar","rameshawari", "Tukram hall", "narendra nagar",
                 "chatrapati square","sawrakar square", "pratap nagar", "padole hospital square","sambhaji square", "NIT garden",
                 "Trimurti nagar","mangalmurti square","balaji nagar", "mahindra company", "IC square", "electric zone", "Hingna T-point", "crpf", "Ycce","Wanadongri"
-                ,"Buldi", "Dhantoli", "Lokmat Square", "Rahate Colony", "Jail Gate", "Ajni","Sai Mandir", "Chatrapatti", "Sneh Nagar", "Rajeev Nagar", "Somalwada",
+                ,"Buldi", "Dhantoli", "Lokmat Square", "Rahate Colony", "Jail Gate", "Ajni","Sai Mandir",  "Sneh Nagar", "Rajeev Nagar", "Somalwada",
                 "Ujjwal Nagar", "Sonegaon", "Airport(Pride Hotel)", "Bara Kholi", "Shivangaon","Chinchbhavan", "Khapri Naka", "Khapri", "Khapri Fata", "Parsodi",
                 "Gauvsi Manapur", "Jamtha", "Ashokvan", "Dongargaon", "Gothali", "Mohgaon","Satgaon Fata", "Butibori"};
 
@@ -145,7 +145,9 @@ public class MainActivity extends AppCompatActivity {
                             aDestinaion.setError("Destination Empty");
                         }
                         if (mDestination!= null&& mSource == mDestination){
-                            Toast.makeText(MainActivity.this, "Source and Destination cannot be same!!!!", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this, "Source and Destination cannot be same!!!!", Toast.LENGTH_SHORT).show();
+//                            aSource.setError("Source same as Destination");
+                            aDestinaion.setError("Destination same as Source");
                         }
                     }else{
 
@@ -176,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
                                 ticketIntent.putExtra("date",ticketdate);
                                 ticketIntent.putExtra("source",mSource);
                                 ticketIntent.putExtra("destination",mDestination);
-                                Toast.makeText(MainActivity.this, "startpos "+startpos+" child "+nchild+" Adult "+ nadult+" date " +date+" desPos "+desPos+" route "+route+ " upDown "+upDown, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(MainActivity.this, "startpos "+startpos+" child "+nchild+" Adult "+ nadult+" date " +date+" desPos "+desPos+" route "+route+ " upDown "+upDown, Toast.LENGTH_SHORT).show();
                                 progressDialog.dismiss();
                                 finish();
                                 startActivity(ticketIntent);
@@ -186,8 +188,9 @@ public class MainActivity extends AppCompatActivity {
                                 if (nadult==0&&nchild==0){
                                     child.setError("child cannot be 0");
                                     adult.setError("Adult cannot be 0");
+                                }else{
+                                    Toast.makeText(MainActivity.this, "Error while requesting ", Toast.LENGTH_SHORT).show();
                                 }
-                                Toast.makeText(MainActivity.this, "Error while requesting ", Toast.LENGTH_SHORT).show();
                             }
                             // Toast.makeText(MainActivity.this, "work in progress go safe ", Toast.LENGTH_SHORT).show();
 

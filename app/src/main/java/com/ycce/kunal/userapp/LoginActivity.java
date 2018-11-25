@@ -258,7 +258,7 @@ public class LoginActivity extends AppCompatActivity {
     //runtime permission for
     private  boolean checkAndRequestPermissions() {
 //        int camera = ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA);
-//        int storage = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int storage = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
 //        int internet =  ContextCompat.checkSelfPermission(this,android.Manifest.permission.INTERNET);
         int loc = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION);
         int loc2 = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
@@ -267,9 +267,9 @@ public class LoginActivity extends AppCompatActivity {
        /* if (camera != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(android.Manifest.permission.CAMERA);
         }*/
-     /*   if (storage != PackageManager.PERMISSION_GRANTED) {
+        if (storage != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }*/
+        }
        /* if (internet != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(android.Manifest.permission.INTERNET);
         }*/
