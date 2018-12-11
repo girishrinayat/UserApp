@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:background="@drawable/cardview"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="5dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/busno"
+            android:textSize="20dp"
+            android:textColor="#ffffff"
+            android:background="#6064c2"/>
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:background="#cceef9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+        <TextView
+            android:layout_width="0dp"
+            android:textSize="18dp"
+            android:text="Route :"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"/>
+        <TextView
+            android:id="@+id/route"
+            android:layout_width="0dp"
+            android:textSize="18dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:background="#cceef9"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+        <TextView
+            android:layout_width="0dp"
+            android:textSize="18dp"
+            android:text="Towards :"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"/>
+        <TextView
+            android:id="@+id/towards"
+            android:layout_width="0dp"
+            android:textSize="18dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"/>
+    </LinearLayout>
+        <LinearLayout
+            android:background="#cceef9"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="0dp"
+                android:textSize="18dp"
+                android:text="Current Bus-Stop :"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"/>
+            <TextView
+                android:id="@+id/busstop"
+                android:layout_width="0dp"
+                android:textSize="18dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="0dp"
+                android:textSize="18dp"
+                android:text="Position :"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"/>
+            <TextView
+                android:id="@+id/position"
+                android:layout_width="0dp"
+                android:textSize="18dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

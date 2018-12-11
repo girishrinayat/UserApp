@@ -165,7 +165,10 @@ public class TicketActivity extends AppCompatActivity {
         locateBus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(TicketActivity.this,SearchActivity.class));
+                Intent searchIntent = new Intent(TicketActivity.this,SearchActivity.class);
+                searchIntent.putExtra("route",setroute);
+                searchIntent.putExtra("upDown",upDown);
+                startActivity(searchIntent);
             }
         });
         //ticket logic

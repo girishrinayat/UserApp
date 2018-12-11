@@ -11,8 +11,24 @@
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Not yet Build"/>
+        android:text="Available Buses List"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:background="#3da0ab"/>
 
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </ListView>
+
+    <ProgressBar
+        android:layout_gravity="center"
+        android:id="@+id/loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
     <Button
 
         android:layout_width="match_parent"

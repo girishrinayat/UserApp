@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                             String route = busStops.getRoute();
                             String upDown = busStops.upDown();
 
+//                             new Intent(MainActivity.this,SearchActivity.class);
                             Intent ticketIntent = new Intent(MainActivity.this,TicketActivity.class);
 
                             if (startpos != 0 && desPos != 0 &&(nadult!=0||nchild!=0)){
@@ -182,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
                                 progressDialog.dismiss();
                                 finish();
                                 startActivity(ticketIntent);
-
+//                                startActivity(new Intent(MainActivity.this,SearchActivity.class));
                             }else{
                                 progressDialog.dismiss();
                                 if (nadult==0&&nchild==0){
