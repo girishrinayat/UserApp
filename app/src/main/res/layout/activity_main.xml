@@ -61,9 +61,8 @@
             android:orientation="horizontal"
 
             >
-            <EditText
+            <TextView
                 android:layout_weight="0.1"
-                android:editable="false"
                 android:clickable="false"
                 android:gravity="center"
                 android:layout_width="0dp"

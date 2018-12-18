@@ -1,6 +1,5 @@
 package com.ycce.kunal.userapp;
 
-import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -11,37 +10,28 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.UUID;
-import java.io.UnsupportedEncodingException;
-
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.zxing.WriterException;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -100,7 +90,7 @@ public class TicketActivity extends AppCompatActivity {
     private String cvvNum;
     private ProgressDialog progressDialog;
     private Bitmap bitmap;
-    private   Toolbar toolbar = null;
+    private Toolbar toolbar = null;
     private SharedPreferences applicationpreferences;
     private SharedPreferences.Editor editor;
 
@@ -231,7 +221,7 @@ public class TicketActivity extends AppCompatActivity {
                       expDate = expiry.getText().toString();
                       cvvNum = cvv.getText().toString();
 
-                      if ((cardNum+expDate+cvvNum).equals("12345678901234560721123")){
+                      if ((cardNum.length()==16 && expDate.length()==4 && cvvNum.length() == 3)){
                                  progressDialog.setMessage("Processing transaction...");
                                  progressDialog.show();
                                  if (progressDialog.isShowing()){
@@ -292,7 +282,11 @@ public class TicketActivity extends AppCompatActivity {
                 try{
                     ContextWrapper wrapper = new ContextWrapper(getApplicationContext());
                     File file = Environment.getExternalStorageDirectory();
-                    file = new File(file+"/TicketQRCode/Images/", dateId+".jpg");
+                    file = new File(file,"/TicketQRCode/Images/");
+                    if (!file.exists()) {
+                        file.mkdirs();
+                    }
+                    file = new File(file,dateId+".jpg");
                     OutputStream stream = null;
                     stream = new FileOutputStream(file);
                     bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream);
@@ -304,10 +298,11 @@ public class TicketActivity extends AppCompatActivity {
                     paymentLayout.setVisibility(View.GONE);
                     ticketLayout.setVisibility(View.VISIBLE);
                     locateBus.setVisibility(View.VISIBLE);
-                    myRef.child( dateId).setValue(encode);
+                    myRef.child(dateId).setValue(encode);
                     progressDialog.dismiss();
 //                    Log.d("Tag","savedImageURI "+savedImageURI + Uri.parse(file.getPath())+Uri.parse(file.getCanonicalPath())   );
                 }catch (Exception e){
+                    progressDialog.dismiss();
                     paymentLayout.setVisibility(View.VISIBLE);
                     locateBus.setVisibility(View.GONE);
                     ticketLayout.setVisibility(View.GONE);
