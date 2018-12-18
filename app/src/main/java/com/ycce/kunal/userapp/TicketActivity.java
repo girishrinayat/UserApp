@@ -292,7 +292,11 @@ public class TicketActivity extends AppCompatActivity {
                 try{
                     ContextWrapper wrapper = new ContextWrapper(getApplicationContext());
                     File file = Environment.getExternalStorageDirectory();
-                    file = new File(file+"/TicketQRCode/Images/", dateId+".jpg");
+                    file = new File(file,"/TicketQRCode/Images/");
+                    if (!file.exists()) {
+                        file.mkdirs();
+                    }
+                    file = new File(file,dateId+".jpg");
                     OutputStream stream = null;
                     stream = new FileOutputStream(file);
                     bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream);
@@ -308,6 +312,7 @@ public class TicketActivity extends AppCompatActivity {
                     progressDialog.dismiss();
 //                    Log.d("Tag","savedImageURI "+savedImageURI + Uri.parse(file.getPath())+Uri.parse(file.getCanonicalPath())   );
                 }catch (Exception e){
+                    progressDialog.dismiss();
                     paymentLayout.setVisibility(View.VISIBLE);
                     locateBus.setVisibility(View.GONE);
                     ticketLayout.setVisibility(View.GONE);
